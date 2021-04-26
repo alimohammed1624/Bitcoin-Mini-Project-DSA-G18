@@ -7,7 +7,7 @@ struct t
 {
     int SenderID;
     int RecieverID;
-    int Amount;
+    double Amount;
 };
 
 struct block
@@ -22,8 +22,14 @@ struct block
 struct person
 {
     int uID;
-    int balance;
+    double balance;
     int numTransactions;
     transaction *transactions;
     char joinDateTime[50];
 };
+
+Person addUser();
+void transact(int sender, int reciever, double amount);
+Block createBlock();
+void attack();
+void validate();
