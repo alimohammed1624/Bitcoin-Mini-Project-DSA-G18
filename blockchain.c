@@ -8,8 +8,12 @@ double amount_arr[50];
 int transaction_arr_ptr=0;
 
 void transact(int sender, int reciever, double amount){
-    if(amount <= 0){
-        printf("Amount can't be zero or negative");
+    if(amount == 0){
+        printf("Amount can't be zero\n");
+        return;
+    }
+    if(amount < 0){
+        printf("amount can't be negative\n");
         return;
     }
     send_recieve_arr[0][transaction_arr_ptr]=sender;
@@ -17,9 +21,16 @@ void transact(int sender, int reciever, double amount){
     amount_arr[transaction_arr_ptr]=amount;
     if(transaction_arr_ptr==50){
         createBlock();
+        for(int i=0;i<50;i++){
+            for(int j=0;j<2;j++){
+                send_recieve_arr[j][i]=0;
+            }
+            amount_arr[i]=0;
+        }
         transaction_arr_ptr=0;
     }
     else{
         transaction_arr_ptr+=1;
     }
+    return;
 }

@@ -1,36 +1,47 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "src/utils.h"
 
 void main(){
+    printf("You have started the blockchain.\n To make an action, chose the appropriate option\n");
     while(1){
-        char input[10];
-        scanf("%s",input);
+        printf("1 - Add a user\n");
+        printf("2 - Make a transaction\n");
+        printf("3 - Attack a random block\n");
+        printf("4 - Validate the blockchain\n");
+        printf("0 - Kill the blockchain\n");
+        int input;
+        scanf("%d",&input);
         
-        if(!strcmp(input,"exit")){
+        if(input == 0){
             break;
         }
 
-        if(!strcmp(input,"add")){
+        if(input ==1){
             addUser();
             continue;
         }
 
-        if(!strcmp(input,"transact")){
+        if(input ==2){
             int sender;
             int reciever;
             double amount;
+            printf("Enter sender ID\n");
+            scanf("%d",&sender);
+            printf("Enter reciever ID\n");
+            scanf("%d",&reciever);
+            printf("Enter amount to be sent\n");
+            scanf("%lf",&amount);
             transact(sender,reciever,amount);
             continue;
         }
 
-        if(!strcmp(input,"attack")){
+        if(input ==3){
             attack();
             continue;
         }
 
-        if(!strcmp(input,"validate")){
+        if(input ==4){
             validate();
             continue;
         }
