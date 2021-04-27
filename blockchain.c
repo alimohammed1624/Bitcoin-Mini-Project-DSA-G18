@@ -34,3 +34,17 @@ void transact(int sender, int reciever, double amount){
     }
     return;
 }
+
+Person addUser()
+{
+    Person p;
+    printf("Date (dd/mm/yy) and time (hh:mm):");
+    scanf("\n%[^\n]s", &p.joinDateTime);
+    srand(time(0));
+    p.uID = rand();
+    printf("Your UPI id is %d", p.uID);
+    p.balance = 0;
+    p.numTransactions = 0;
+    p.transactions = NULL;
+    return p;
+}
