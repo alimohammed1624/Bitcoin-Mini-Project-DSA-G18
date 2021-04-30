@@ -70,6 +70,13 @@ void inqure_bal(int user){
     return;
 }
 
+void inquire_transactions(int user){
+    for(int i=0;i<user_arr[user].numTransactions;i++){
+        printf("%i - Sender: %d \t Reciever: %d \t Amount: %lf",i + 1,user_arr[user].transactions[i].SenderID,user_arr[user].transactions[i].RecieverID,user_arr[user].transactions[i].Amount);
+    }
+    return;
+}
+
 void addUser()
 {
     int r=0;

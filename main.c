@@ -10,10 +10,11 @@ void main(){
     while(1){
         printf("\n\n\n");
         printf("1 - Add a user\n");
-        printf("2 - Inqure balance\n");
+        printf("2 - View balance\n");
         printf("3 - Make a transaction\n");
         printf("4 - Attack a random block\n");
         printf("5 - Validate the blockchain\n");
+        printf("6 - View Transaction history\n");
         printf("0 - Kill the blockchain\n");
         scanf("%d",&input);
         
@@ -23,8 +24,6 @@ void main(){
 
         if(input ==1){
             addUser();
-            printf("Press enter to continue\n");
-            scanf("[^n]");
             continue;
         }
 
@@ -33,8 +32,6 @@ void main(){
             printf("Enter user's uID\n");
             scanf("%d",&user);
             inqure_bal(user);
-            printf("Press enter to continue\n");
-            scanf("[^n]");
             continue;
         }
 
@@ -49,24 +46,27 @@ void main(){
             printf("Enter amount to be sent\n");
             scanf("%lf",&amount);
             transact(sender,reciever,amount);
-            printf("Press enter to continue\n");
-            scanf("[^n]");
             continue;
         }
 
         if(input ==4){
             attack();
-            printf("Press enter to continue\n");
-            scanf("[^n]");
             continue;
         }
 
         if(input ==5){
             validate();
-            printf("Press enter to continue\n");
-            scanf("[^n]");
             continue;
         }
+
+        if(input == 6){
+            printf("Enter user's uID\n");
+            int user;
+            scanf("%d",&user);
+            inquire_transactions(user);
+            continue;
+        }
+
     }
     return;
 }
