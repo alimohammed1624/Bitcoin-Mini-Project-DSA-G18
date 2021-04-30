@@ -29,6 +29,7 @@ struct person
 };
 
 void addUser();
+void inqure_bal(int user);
 void transact(int sender, int reciever, double amount);
 void createBlock();
 void attack();

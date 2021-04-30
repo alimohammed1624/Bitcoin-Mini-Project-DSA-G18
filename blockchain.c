@@ -61,6 +61,15 @@ void transact(int sender, int reciever, double amount){
     return;
 }
 
+void inqure_bal(int user){
+    if(user_arr[user].joinDateTime[0]==0 && user_arr[user].joinDateTime[1]==0){
+        printf("User doesn't exist");
+        return;
+    }
+    printf("The balance for the user with UID %d is %lf units\n",user,user_arr[user].balance);
+    return;
+}
+
 void addUser()
 {
     int r=0;
