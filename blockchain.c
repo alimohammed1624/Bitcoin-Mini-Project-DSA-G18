@@ -38,8 +38,12 @@ void transact(int sender, int reciever, double amount){
     transaction_arr[transaction_arr_ptr].Amount=amount;
     user_arr[sender].transactions[user_arr[sender].numTransactions].SenderID=sender;
     user_arr[sender].transactions[user_arr[sender].numTransactions].RecieverID=reciever;
+    user_arr[sender].transactions[user_arr[sender].numTransactions].Amount=amount;
+    user_arr[sender].balance-=amount;
     user_arr[reciever].transactions[user_arr[reciever].numTransactions].SenderID=sender;
     user_arr[reciever].transactions[user_arr[reciever].numTransactions].RecieverID=reciever;
+    user_arr[reciever].transactions[user_arr[reciever].numTransactions].Amount=amount;
+    user_arr[reciever].balance+=amount;
     user_arr[sender].numTransactions+=1;
     user_arr[reciever].numTransactions+=1;
     if(transaction_arr_ptr==50){
@@ -89,5 +93,12 @@ void attack(){
 }
 
 void validate(){
+    return;
+}
+
+void checkifworks(){
+    int a;
+    scanf("%d",&a);
+    printf("%lf",user_arr[a].balance);
     return;
 }
