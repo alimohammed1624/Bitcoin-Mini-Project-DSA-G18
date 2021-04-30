@@ -3,7 +3,7 @@
 #include "src/utils.h"
 
 void main(){
-    printf("You have started the blockchain.\n To make an action, chose the appropriate option\n");
+    printf("You have started the blockchain.\nTo make an action, chose the appropriate option\n");
     int input;
     while(1){
         printf("1 - Add a user\n");

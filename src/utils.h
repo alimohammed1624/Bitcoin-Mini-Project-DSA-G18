@@ -24,7 +24,7 @@ struct person
     int uID;
     double balance;
     int numTransactions;
-    transaction transactions[1000000];
+    transaction transactions[1000];
     char joinDateTime[50];
 };
 

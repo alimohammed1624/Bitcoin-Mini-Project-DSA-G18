@@ -51,10 +51,10 @@ void transact(int sender, int reciever, double amount){
 
 void addUser()
 {
-    printf("Date (dd/mm/yy) and time (hh:mm):");
     int r=0;
+
+    srand(time(0));
     while(1){
-        srand(time(0));
         r=rand()%1000;
         if(user_arr[r].joinDateTime[0]==0 && user_arr[r].joinDateTime[1]==0){
             break;
@@ -64,9 +64,10 @@ void addUser()
         }
     }
     user_arr[r].uID = r;
+    printf("Date (dd/mm/yy) and time (hh:mm):\n");
     scanf("\n%[^\n]s", user_arr[r].joinDateTime);
-    printf("Your uID is %d", user_arr[r].uID);
-    user_arr[r].balance = 0;
+    printf("Your uID is %d\n", user_arr[r].uID);
+    user_arr[r].balance = 1000;
     user_arr[r].numTransactions = 0;
     return;
 }
