@@ -4,13 +4,13 @@
 
 void main(){
     printf("You have started the blockchain.\n To make an action, chose the appropriate option\n");
+    int input;
     while(1){
         printf("1 - Add a user\n");
         printf("2 - Make a transaction\n");
         printf("3 - Attack a random block\n");
         printf("4 - Validate the blockchain\n");
         printf("0 - Kill the blockchain\n");
-        int input;
         scanf("%d",&input);
         
         if(input == 0){

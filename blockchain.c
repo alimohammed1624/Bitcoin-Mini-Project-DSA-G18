@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "src/utils.h"
 
 //Global Variables for transasct
@@ -48,7 +49,7 @@ void transact(int sender, int reciever, double amount){
     return;
 }
 
-Person addUser()
+void addUser()
 {
     printf("Date (dd/mm/yy) and time (hh:mm):");
     int r=0;
@@ -64,8 +65,20 @@ Person addUser()
     }
     user_arr[r].uID = r;
     scanf("\n%[^\n]s", user_arr[r].joinDateTime);
-    printf("Your uID is %d", p.uID);
+    printf("Your uID is %d", user_arr[r].uID);
     user_arr[r].balance = 0;
     user_arr[r].numTransactions = 0;
-    return p;
+    return;
+}
+
+void createBlock(){
+    return;
+}
+
+void attack(){
+    return;
+}
+
+void validate(){
+    return;
 }

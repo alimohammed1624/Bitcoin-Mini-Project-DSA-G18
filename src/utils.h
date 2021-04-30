@@ -28,8 +28,8 @@ struct person
     char joinDateTime[50];
 };
 
-Person addUser();
+void addUser();
 void transact(int sender, int reciever, double amount);
-Block createBlock();
+void createBlock();
 void attack();
 void validate();
