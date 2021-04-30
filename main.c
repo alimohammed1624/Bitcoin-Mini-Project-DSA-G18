@@ -47,6 +47,5 @@ void main(){
             continue;
         }
     }
-    checkifworks();
     return;
 }

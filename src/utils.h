@@ -33,4 +33,3 @@ void transact(int sender, int reciever, double amount);
 void createBlock();
 void attack();
 void validate();
-void checkifworks();

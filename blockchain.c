@@ -95,10 +95,3 @@ void attack(){
 void validate(){
     return;
 }
-
-void checkifworks(){
-    int a;
-    scanf("%d",&a);
-    printf("%lf",user_arr[a].balance);
-    return;
-}
