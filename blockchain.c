@@ -13,6 +13,14 @@ Person user_arr[1000];
 //Functions
 
 void transact(int sender, int reciever, double amount){
+    if(user_arr[sender].joinDateTime[0]==0 && user_arr[sender].joinDateTime[1]==0){
+        printf("Sender doesn't exist\n");
+        return;
+    }
+    if(user_arr[reciever].joinDateTime[0]==0 && user_arr[reciever].joinDateTime[1]==0){
+        printf("Reciever doesn't exist\n");
+        return;
+    }
     if(user_arr[sender].balance<amount){
         printf("Amount can't be greater than sender's balance");
         return;

@@ -6,6 +6,7 @@ void main(){
     printf("You have started the blockchain.\nTo make an action, chose the appropriate option\n");
     int input;
     while(1){
+        printf("\n\n\n");
         printf("1 - Add a user\n");
         printf("2 - Make a transaction\n");
         printf("3 - Attack a random block\n");
