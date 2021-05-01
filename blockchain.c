@@ -17,6 +17,10 @@ void transact(int sender, int reciever, double amount){
         printf("Sender doesn't exist\n");
         return;
     }
+    if(sender==reciever){
+        printf("Sender and reciver can't be the same\n");
+        return;
+    }
     if(user_arr[reciever].joinDateTime[0]==0 && user_arr[reciever].joinDateTime[1]==0){
         printf("Reciever doesn't exist\n");
         return;
