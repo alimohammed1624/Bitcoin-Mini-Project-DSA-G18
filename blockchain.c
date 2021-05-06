@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <openssl/sha.h>
 #include "src/utils.h"
 
 //Global Variables for transasct
@@ -151,6 +152,25 @@ void attack()
     }
     printf("Attack failed: Block with number %d does not exist\n", randNum);
     return;
+}
+
+void getTranactionStr(char *dest, transaction *transactions)
+{
+    // concatenates the transaction array into string dest
+}
+
+// calculates hash of a block by taking destination string and block contents as arguments
+void getBlockHash(char *hash, int blocknum, transaction *transactions, char *PrevBlockHash, int nonce)
+{
+    char tempBuffer[2000];
+    char transactionStr[1000];
+
+    getTranactionStr(transactionStr, transactions);
+    snprintf(tempBuffer, sizeof(tempBuffer), "%d, %s, %s", blocknum, PrevBlockHash, transactionStr);
+
+    SHA1(tempBuffer, strlen((const char *)tempBuffer), hash);
+    hash[1] ^= nonce;
+    hash[0] ^= nonce >> 8;
 }
 
 void validate()
