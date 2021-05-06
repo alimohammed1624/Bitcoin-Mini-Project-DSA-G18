@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include <openssl/sha.h>
 #include "src/utils.h"
 
@@ -181,7 +182,48 @@ void getBlockHash(char *hash, int blocknum, transaction *transactions, char *Pre
     hash[0] ^= nonce >> 8;
 }
 
+// returns the original nonce of a block
+int getNonce(char *curHash, char *originalHash, int nonce)
+{
+    curHash[1] ^= nonce;
+    curHash[0] ^= nonce >> 8;
+
+    curHash[0] ^= originalHash[0];
+    curHash[1] ^= originalHash[1];
+
+    int originalNonce = (int)curHash[0];
+    originalNonce = originalNonce << 8;
+    originalNonce += (int)curHash[1];
+    return originalNonce;
+}
+
 void validate()
 {
-    return;
+    if (BlockChain == NULL)
+    {
+        printf("Block chain empty\n");
+        return;
+    }
+    if (BlockChain->NextBlock == NULL)
+    {
+        printf("Block chain validated");
+        return;
+    }
+
+    Block *curBlock = BlockChain->NextBlock;
+    Block *prevBlock = BlockChain;
+    int countAttacks = 0;
+    while (curBlock != NULL)
+    {
+        char curHash[500];
+        getBlockHash(curHash, curBlock->BlockNumber, curBlock->Transactions,
+                     curBlock->PrevBlockHash, prevBlock->Nonce);
+        if (strcmp(curHash, curBlock->PrevBlockHash) != 0)
+        {
+            prevBlock->Nonce = getNonce(curHash, curBlock->PrevBlockHash, prevBlock->Nonce);
+            countAttacks++;
+        }
+    }
+
+    printf("Block chain validated: %d attacks detected\n", countAttacks);
 }
