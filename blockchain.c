@@ -154,9 +154,17 @@ void attack()
     return;
 }
 
+// concatenates the transaction array into string dest
 void getTranactionStr(char *dest, transaction *transactions)
 {
-    // concatenates the transaction array into string dest
+    char tempTransact[50];
+    dest[0] = '\0';
+    for (int i = 0; i < 50; i++)
+    {
+        snprintf(tempTransact, sizeof(tempTransact), "{%d, %d, %d}",
+                 transactions[i].SenderID, transactions[i].Amount, transactions[i].RecieverID);
+        strcat(dest, tempTransact);
+    }
 }
 
 // calculates hash of a block by taking destination string and block contents as arguments
