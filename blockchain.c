@@ -150,6 +150,10 @@ void attack()
             printf("Attack successful! Nonce modified\n");
             return;
         }
+        else if (curBlock->BlockNumber > randNum)
+            break;
+
+        curBlock = curBlock->NextBlock;
     }
     printf("Attack failed: Block with number %d does not exist\n", randNum);
     return;
@@ -223,6 +227,9 @@ void validate()
             prevBlock->Nonce = getNonce(curHash, curBlock->PrevBlockHash, prevBlock->Nonce);
             countAttacks++;
         }
+
+        prevBlock = curBlock;
+        curBlock = curBlock->NextBlock;
     }
 
     printf("Block chain validated: %d attacks detected\n", countAttacks);
