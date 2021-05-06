@@ -1,3 +1,5 @@
+#ifndef UTILS_H_
+#define UTILS_H_
 
 typedef struct block Block;
 typedef struct t transaction;
@@ -35,3 +37,5 @@ void transact(int sender, int reciever, double amount);
 void createBlock();
 void attack();
 void validate();
+
+#endif
