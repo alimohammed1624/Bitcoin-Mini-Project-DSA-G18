@@ -49,19 +49,7 @@ void transact(int sender, int reciever, double amount)
         printf("amount can't be negative\n");
         return;
     }
-    transaction_arr[transaction_arr_ptr].SenderID = sender;
-    transaction_arr[transaction_arr_ptr].RecieverID = reciever;
-    transaction_arr[transaction_arr_ptr].Amount = amount;
-    user_arr[sender].transactions[user_arr[sender].numTransactions].SenderID = sender;
-    user_arr[sender].transactions[user_arr[sender].numTransactions].RecieverID = reciever;
-    user_arr[sender].transactions[user_arr[sender].numTransactions].Amount = amount;
-    user_arr[sender].balance -= amount;
-    user_arr[reciever].transactions[user_arr[reciever].numTransactions].SenderID = sender;
-    user_arr[reciever].transactions[user_arr[reciever].numTransactions].RecieverID = reciever;
-    user_arr[reciever].transactions[user_arr[reciever].numTransactions].Amount = amount;
-    user_arr[reciever].balance += amount;
-    user_arr[sender].numTransactions += 1;
-    user_arr[reciever].numTransactions += 1;
+    update(sender, reciever, amount);
     if (transaction_arr_ptr == 50)
     {
         createBlock();
@@ -78,6 +66,35 @@ void transact(int sender, int reciever, double amount)
         transaction_arr_ptr += 1;
     }
     return;
+}
+
+//Updates values in respective arrays
+void update(int sender, int reciever, double amount){
+   
+    //Updates the values in the array of transactions for the current block
+    transaction_arr[transaction_arr_ptr].SenderID = sender;
+    transaction_arr[transaction_arr_ptr].RecieverID = reciever;
+    transaction_arr[transaction_arr_ptr].Amount = amount;
+   
+    //Updates the transaction array of the sender
+    user_arr[sender].transactions[user_arr[sender].numTransactions].SenderID = sender;
+    user_arr[sender].transactions[user_arr[sender].numTransactions].RecieverID = reciever;
+    user_arr[sender].transactions[user_arr[sender].numTransactions].Amount = amount;
+   
+    //Updates sender balance
+    user_arr[sender].balance -= amount;
+    
+    //Updates transaction array of the sender
+    user_arr[reciever].transactions[user_arr[reciever].numTransactions].SenderID = sender;
+    user_arr[reciever].transactions[user_arr[reciever].numTransactions].RecieverID = reciever;
+    user_arr[reciever].transactions[user_arr[reciever].numTransactions].Amount = amount;
+    
+    //Updates reciever balance
+    user_arr[reciever].balance += amount;
+
+    //Updates number of transactions for the sender and reciever
+    user_arr[sender].numTransactions += 1;
+    user_arr[reciever].numTransactions += 1;
 }
 
 void inqure_bal(int user)
