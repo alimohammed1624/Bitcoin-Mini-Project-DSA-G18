@@ -1,41 +1,39 @@
+#include <stdlib.h>
 #include "utils.h"
 #include "hashtable.h"
 
 Node *makenode(Person n)
 {
     Node *newnode = (Node *)malloc(sizeof(Node));
-    newnode->element = n;
+    newnode->user = n;
     newnode->next = NULL;
     return newnode;
 }
 
-HashTable CreateHashTable(int m)
+void initHashTable(int m)
 {
-    HashTable T;
-    T.num_elems = 0;
-    T.tsize = m;
-    T.table = (Node *)calloc(m, sizeof(Node));
-    if (T.table != NULL)
+    userTable.num_elems = 0;
+    userTable.tsize = m;
+    userTable.table = (Node *)malloc(m * sizeof(Node));
+    if (userTable.table == NULL)
     {
-        printf("ERROR");
-        exit 0;
+        printf("Error: Insufficient memory\n");
+        exit(0);
     }
 
     for (int i = 0; i < m; i++)
     {
-        T.table[i].element = 0;
-        T.table[i].next = NULL;
+        userTable.table[i].next = NULL;
     }
-    return T;
+    return userTable;
 }
 
-void DeleteHashTable(HashTable T)
+void DeleteHashTable()
 {
-    int n = T.tsize;
-
+    int n = userTable.tsize;
     for (int i = 0; i < n; i++)
     {
-        Node *cur = T.table[i].next;
+        Node *cur = userTable.table[i].next;
         while (cur)
         {
             Node *temp = cur;
@@ -43,48 +41,34 @@ void DeleteHashTable(HashTable T)
             free(temp);
         }
     }
-    free(T.table);
+    free(userTable.table);
 }
 
-void InsertS(HashTable *T, Person elem)
+void InsertS(Person elem)
 {
-    int hash = elem.uID % T->tsize;
+    int hash = elem.uID % userTable.tsize;
     Node *newnode = makenode(elem);
-    Node *temp = &T->table[hash];
+    Node *temp = &userTable.table[hash];
 
     while (temp->next)
     {
         temp = temp->next;
     }
     temp->next = newnode;
-    T->num_elems++;
+    userTable.num_elems++;
 }
 
-Person *SearchS(HashTable T, Person elem)
+Person *FindUser(int uID)
 {
-    int hash = elem % T.tsize;
-    Person *temp = T.table[hash].next;
+    int hash = uID % userTable.tsize;
+    Node *temp = userTable.table[hash].next;
 
-    for (int i = 0; temp != NULL; i++, temp = temp->next)
+    for (; temp != NULL; temp = temp->next)
     {
-        if (temp->element == elem)
+        if (temp->user.uID == uID)
         {
-            return temp->element;
+            return &(temp->user);
         }
     }
-    return -1;
-}
-int SearchID(HashTable T, int elem)
-{
-    int hash = elem % T.tsize;
-    Person *temp = T.table[hash].next;
-
-    for (int i = 0; temp != NULL; i++, temp = temp->next)
-    {
-        if (temp->element.uID == elem)
-        {
-            return elem;
-        }
-    }
-    return -1;
+    return NULL;
 }

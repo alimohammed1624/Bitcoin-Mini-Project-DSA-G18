@@ -6,18 +6,6 @@
 #include "src/utils.h"
 #include "src/hashtable.h"
 
-//Global Variables for transasct
-transaction transaction_arr[50];
-int transaction_arr_ptr = 0;
-
-// Blockchain
-Block *BlockChain;
-
-//Global Variables for User
-HashTable usertable;
-
-//Functions
-
 void transact(int sender, int reciever, double amount)
 {
     if (user_arr[sender].joinDateTime[0] == 0 && user_arr[sender].joinDateTime[1] == 0)
@@ -119,18 +107,16 @@ void inquire_transactions(int user)
     return;
 }
 
-void addUser(HashTable *T, Person elem)
+void addUser(Person elem)
 {
-
     int r = 0;
-    Person user = (Person)malloc(sizeof(Person));
+    Person *user = (Person *)malloc(sizeof(Person));
 
-    srand(time(0));
     while (1)
     {
         r = rand();
 
-        if (SearchID(usertable, r) != -1)
+        if (FindUser(r) == NULL)
         {
             break;
         }
@@ -139,12 +125,12 @@ void addUser(HashTable *T, Person elem)
             continue;
         }
     }
-    user.uID = r;
-    time(&user.joinDateTime);
-    user.balance = 1000;
-    user.numTransactions = 0;
-    printf("Your uID is %d\n", user.uID);
-    InsertS(usertable, user);
+    user->uID = r;
+    time(&user->joinDateTime);
+    user->balance = 1000;
+    user->numTransactions = 0;
+    printf("Your user ID is %d\n", user.uID);
+    InsertS(*user);
 }
 
 void createBlock()
