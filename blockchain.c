@@ -69,26 +69,27 @@ void transact(int sender, int reciever, double amount)
 }
 
 //Updates values in respective arrays
-void update(int sender, int reciever, double amount){
-   
+void update(int sender, int reciever, double amount)
+{
+
     //Updates the values in the array of transactions for the current block
     transaction_arr[transaction_arr_ptr].SenderID = sender;
     transaction_arr[transaction_arr_ptr].RecieverID = reciever;
     transaction_arr[transaction_arr_ptr].Amount = amount;
-   
+
     //Updates the transaction array of the sender
     user_arr[sender].transactions[user_arr[sender].numTransactions].SenderID = sender;
     user_arr[sender].transactions[user_arr[sender].numTransactions].RecieverID = reciever;
     user_arr[sender].transactions[user_arr[sender].numTransactions].Amount = amount;
-   
+
     //Updates sender balance
     user_arr[sender].balance -= amount;
-    
+
     //Updates transaction array of the sender
     user_arr[reciever].transactions[user_arr[reciever].numTransactions].SenderID = sender;
     user_arr[reciever].transactions[user_arr[reciever].numTransactions].RecieverID = reciever;
     user_arr[reciever].transactions[user_arr[reciever].numTransactions].Amount = amount;
-    
+
     //Updates reciever balance
     user_arr[reciever].balance += amount;
 
@@ -145,7 +146,32 @@ void addUser()
 
 void createBlock()
 {
-    return;
+    Block *newBlock = (*Block)malloc(sizeof(Block));
+    Block *lastBlock = BlockChain;
+
+    while (lastBlock->NextBlock)
+    {
+        lastBlock = lastBlock->NextBlock;
+    }
+
+    newBlock->BlockNumber = lastBlock->BlockNumber + 1;
+    newBlock->NextBlock = NULL;
+    newBlock->Nonce = rand() % 500 + 1;
+
+    newBlock->Transactions = (transaction *)malloc(50 * sizeof(transaction));
+    if (newBlock->Transactions == NULL)
+    {
+        printf("Insfficient space for new block! Terminating program\n");
+        exit(0);
+    }
+    for (int i = 0; i < 50; i++)
+        newBlock->Transactions[i] = transaction_arr[i];
+
+    getBlockHash(newBlock->PrevBlockHash, lastBlock->BlockNumber,
+                 newBlock->Transactions, lastBlock->PrevBlockHash, newBlock->Nonce);
+    transaction_arr_ptr = 0;
+
+    lastBlock->NextBlock = newBlock;
 }
 
 void attack()
