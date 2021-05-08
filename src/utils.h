@@ -27,10 +27,10 @@ struct person
     double balance;
     int numTransactions;
     transaction transactions[1000];
-    char joinDateTime[50];
+    time_t joinDateTime;
 };
 
-void addUser();
+void addUser(HashTable *T, struct person elem);
 void inqure_bal(int user);
 void inquire_transactions(int user);
 void transact(int sender, int reciever, double amount);

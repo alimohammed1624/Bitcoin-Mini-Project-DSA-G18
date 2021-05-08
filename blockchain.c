@@ -4,6 +4,7 @@
 #include <string.h>
 #include <openssl/sha.h>
 #include "src/utils.h"
+#include "src/hashtable.h"
 
 //Global Variables for transasct
 transaction transaction_arr[50];
@@ -13,7 +14,7 @@ int transaction_arr_ptr = 0;
 Block *BlockChain;
 
 //Global Variables for User
-Person user_arr[1000];
+HashTable usertable;
 
 //Functions
 
@@ -118,15 +119,18 @@ void inquire_transactions(int user)
     return;
 }
 
-void addUser()
+void addUser(HashTable *T, Person elem)
 {
+
     int r = 0;
+    Person user = (Person)malloc(sizeof(Person));
 
     srand(time(0));
     while (1)
     {
-        r = rand() % 1000;
-        if (user_arr[r].joinDateTime[0] == 0 && user_arr[r].joinDateTime[1] == 0)
+        r = rand();
+
+        if (SearchID(usertable, r) != -1)
         {
             break;
         }
@@ -135,13 +139,12 @@ void addUser()
             continue;
         }
     }
-    user_arr[r].uID = r;
-    printf("Date (dd/mm/yy) and time (hh:mm):\n");
-    scanf("\n%[^\n]s", user_arr[r].joinDateTime);
-    printf("Your uID is %d\n", user_arr[r].uID);
-    user_arr[r].balance = 1000;
-    user_arr[r].numTransactions = 0;
-    return;
+    user.uID = r;
+    time(&user.joinDateTime);
+    user.balance = 1000;
+    user.numTransactions = 0;
+    printf("Your uID is %d\n", user.uID);
+    InsertS(usertable, user);
 }
 
 void createBlock()
