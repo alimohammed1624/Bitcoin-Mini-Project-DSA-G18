@@ -143,12 +143,12 @@ void addUser()
         }
     }
     user.uID = r;
-    time(&user.joinDateTime);
+    time_t rawtime = time(NULL);
+    user.joinDateTime = *localtime(&rawtime);
     user.balance = 1000;
     user.numTransactions = 0;
-    printf("Your user ID is %d\n", user.uID);
+    printf("New user added: User iD is %d, %d\n", user.uID);
     InsertS(user);
-    InsertS()
 }
 
 void createBlock()

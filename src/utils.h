@@ -2,6 +2,7 @@
 #define UTILS_H_
 
 #include "hashtable.h"
+#include <time.h>
 
 typedef struct block Block;
 typedef struct t transaction;
@@ -42,7 +43,7 @@ struct person
     double balance;
     int numTransactions;
     transaction transactions[1000];
-    time_t joinDateTime;
+    struct tm joinDateTime;
 };
 
 void initBlockChain();
