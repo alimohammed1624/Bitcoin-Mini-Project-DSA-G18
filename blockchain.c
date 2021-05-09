@@ -32,27 +32,27 @@ void transact(int sender, int reciever, double amount)
 
     if (S == NULL)
     {
-        printf("Error: Sender ID invalid\n");
+        printf("Transaction aborted: Sender ID invalid\n");
         return;
     }
     if (R == NULL)
     {
-        printf("Error: Reciever ID invalid\n");
+        printf("Transaction aborted: Reciever ID invalid\n");
         return;
     }
     if (S == R)
     {
-        printf("Error: Sender and reciver must be different\n");
+        printf("Transaction aborted: Sender and reciver must be different\n");
         return;
     }
     if (S->balance < amount)
     {
-        printf("Sender balance insufficient");
+        printf("Transaction aborted: Sender balance insufficient");
         return;
     }
     if (amount <= 0)
     {
-        printf("Error: Amount must be greater than zero\n");
+        printf("Transaction aborted: Amount must be greater than zero\n");
         return;
     }
     update(S, R amount);
@@ -187,7 +187,7 @@ void attack()
     }
 
     int randNum = rand() % 50 + 1;
-    printf("Random number generated:%d\n", randNum);
+    printf("Random number generated: %d\n", randNum);
     Block *curBlock = BlockChain;
     while (curBlock != NULL)
     {
@@ -213,7 +213,7 @@ void getTranactionStr(char *dest, transaction *transactions)
     dest[0] = '\0';
     for (int i = 0; i < num_t; i++)
     {
-        snprintf(tempTransact, sizeof(tempTransact), "{%d, %d, %d}",
+        snprintf(tempTransact, sizeof(tempTransact), "{%d, %lf, %d}",
                  transactions[i].SenderID, transactions[i].Amount, transactions[i].RecieverID);
         strcat(dest, tempTransact);
     }
