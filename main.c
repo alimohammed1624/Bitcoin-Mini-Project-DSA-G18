@@ -6,9 +6,13 @@ BlockChain B;
 
 void main()
 {
+    srand(time(NULL));
     system("clear");
+
+    initBlockChain();
     printf("You have started the blockchain.\nPress enter\n");
     scanf("[^n]");
+
     int input;
     while (1)
     {
@@ -24,6 +28,7 @@ void main()
 
         if (input == 0)
         {
+            deleteBlockChain();
             break;
         }
 
@@ -78,5 +83,4 @@ void main()
             continue;
         }
     }
-    return;
 }

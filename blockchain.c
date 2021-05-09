@@ -28,6 +28,29 @@ void deleteBlockChain()
     DeleteHashTable();
 }
 
+//Updates values in respective arrays
+void update(Person *sender, Person *reciever, double amount)
+{
+    transaction tr;
+    tr.Amount = amount;
+    tr.SenderID = sender->uID;
+    tr.RecieverID = reciever->uID;
+
+    //Updates the values in the array of transactions for the current block
+    B.transaction_arr[B.transaction_arr_ptr] = tr;
+    B.transaction_arr_ptr++;
+
+    //Updates the transaction for the sender
+    sender->transactions[sender->numTransactions] = tr;
+    sender->numTransactions++;
+    sender->balance -= amount;
+
+    //Updates transaction for the reciever
+    reciever->transactions[reciever->numTransactions] = tr;
+    reciever->numTransactions++;
+    reciever->balance += amount;
+}
+
 void transact(int sender, int reciever, double amount)
 {
     Person *S = FindUser(sender);
@@ -72,29 +95,6 @@ void transact(int sender, int reciever, double amount)
         B.transaction_arr_ptr = 0;
     }
     return;
-}
-
-//Updates values in respective arrays
-void update(Person *sender, Person *reciever, double amount)
-{
-    transaction tr;
-    tr.Amount = amount;
-    tr.SenderID = sender->uID;
-    tr.RecieverID = reciever->uID;
-
-    //Updates the values in the array of transactions for the current block
-    B.transaction_arr[B.transaction_arr_ptr] = tr;
-    B.transaction_arr_ptr++;
-
-    //Updates the transaction for the sender
-    sender->transactions[sender->numTransactions] = tr;
-    sender->numTransactions++;
-    sender->balance -= amount;
-
-    //Updates transaction for the reciever
-    reciever->transactions[reciever->numTransactions] = tr;
-    reciever->numTransactions++;
-    reciever->balance += amount;
 }
 
 void inqure_bal(int user)
@@ -145,6 +145,33 @@ void addUser()
     user.numTransactions = 0;
     printf("New user added: User ID is %d\n", user.uID);
     InsertS(user);
+}
+
+// concatenates the transaction array into string dest
+void getTranactionStr(char *dest, transaction *transactions)
+{
+    char tempTransact[50];
+    dest[0] = '\0';
+    for (int i = 0; i < num_t; i++)
+    {
+        snprintf(tempTransact, sizeof(tempTransact), "{%d, %lf, %d}",
+                 transactions[i].SenderID, transactions[i].Amount, transactions[i].RecieverID);
+        strcat(dest, tempTransact);
+    }
+}
+
+// calculates hash of a block by taking destination string and block contents as arguments
+void getBlockHash(char *hash, int blocknum, transaction *transactions, char *PrevBlockHash, int nonce)
+{
+    char tempBuffer[50 * num_t + 300];
+    char transactionStr[50 * num_t];
+
+    getTranactionStr(transactionStr, transactions);
+    snprintf(tempBuffer, sizeof(tempBuffer), "%d, %s, %s", blocknum, PrevBlockHash, transactionStr);
+
+    SHA1(tempBuffer, strlen((const char *)tempBuffer), hash);
+    hash[1] ^= nonce;
+    hash[0] ^= nonce >> 8;
 }
 
 void createBlock()
@@ -209,33 +236,6 @@ void attack()
         }
         curBlock = curBlock->NextBlock;
     }
-}
-
-// concatenates the transaction array into string dest
-void getTranactionStr(char *dest, transaction *transactions)
-{
-    char tempTransact[50];
-    dest[0] = '\0';
-    for (int i = 0; i < num_t; i++)
-    {
-        snprintf(tempTransact, sizeof(tempTransact), "{%d, %lf, %d}",
-                 transactions[i].SenderID, transactions[i].Amount, transactions[i].RecieverID);
-        strcat(dest, tempTransact);
-    }
-}
-
-// calculates hash of a block by taking destination string and block contents as arguments
-void getBlockHash(char *hash, int blocknum, transaction *transactions, char *PrevBlockHash, int nonce)
-{
-    char tempBuffer[50 * num_t + 300];
-    char transactionStr[50 * num_t];
-
-    getTranactionStr(transactionStr, transactions);
-    snprintf(tempBuffer, sizeof(tempBuffer), "%d, %s, %s", blocknum, PrevBlockHash, transactionStr);
-
-    SHA1(tempBuffer, strlen((const char *)tempBuffer), hash);
-    hash[1] ^= nonce;
-    hash[0] ^= nonce >> 8;
 }
 
 // returns the original nonce of a block
