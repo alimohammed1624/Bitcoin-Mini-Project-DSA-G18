@@ -3,6 +3,7 @@
 
 typedef struct hashtable HashTable;
 typedef struct node Node;
+
 struct hashtable
 {
     int tsize;
@@ -12,14 +13,13 @@ struct hashtable
 
 struct node
 {
-    struct person element;
+    Person user;
     Node *next;
 };
 
-HashTable CreateHashTable(int m);
-Node *makenode(struct person n);
-void DeleteHashTable(HashTable T);
-void InsertS(HashTable *T, struct person elem);
-struct person *SearchS(HashTable T, struct person elem);
-int SearchID(HashTable T, int elem);
+void initHashTable(int m);
+void DeleteHashTable();
+void InsertS(Person P);
+Person *FindUser(int uID);
+
 #endif
