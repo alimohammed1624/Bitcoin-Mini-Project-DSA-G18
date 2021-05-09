@@ -27,38 +27,35 @@ void deleteBlockChain()
 
 void transact(int sender, int reciever, double amount)
 {
-    if (user_arr[sender].joinDateTime[0] == 0 && user_arr[sender].joinDateTime[1] == 0)
+    Person *S = FindUser(sender);
+    Person *R = FindUser(reciever);
+
+    if (S == NULL)
     {
-        printf("Sender doesn't exist\n");
+        printf("Error: Sender ID invalid\n");
         return;
     }
-    if (sender == reciever)
+    if (R == NULL)
     {
-        printf("Sender and reciver can't be the same\n");
+        printf("Error: Reciever ID invalid\n");
         return;
     }
-    if (user_arr[reciever].joinDateTime[0] == 0 && user_arr[reciever].joinDateTime[1] == 0)
+    if (S == R)
     {
-        printf("Reciever doesn't exist\n");
+        printf("Error: Sender and reciver must be different\n");
         return;
     }
-    if (user_arr[sender].balance < amount)
+    if (S->balance < amount)
     {
-        printf("Amount can't be greater than sender's balance");
+        printf("Sender balance insufficient");
         return;
     }
-    if (amount == 0)
+    if (amount <= 0)
     {
-        printf("Amount can't be zero\n");
+        printf("Error: Amount must be greater than zero\n");
         return;
     }
-    if (amount < 0)
-    {
-        printf("amount can't be negative\n");
-        return;
-    }
-    update(sender, reciever, amount);
-    transaction_arr_ptr++;
+    update(S, R amount);
 
     if (transaction_arr_ptr == num_t)
     {
@@ -75,51 +72,47 @@ void transact(int sender, int reciever, double amount)
 }
 
 //Updates values in respective arrays
-void update(int sender, int reciever, double amount)
+void update(Person *sender, Person *reciever, double amount)
 {
+    transaction tr;
+    tr.Amount = amount;
+    tr.SenderID = sender->uID;
+    tr.RecieverID = reciever->uID;
 
     //Updates the values in the array of transactions for the current block
-    transaction_arr[transaction_arr_ptr].SenderID = sender;
-    transaction_arr[transaction_arr_ptr].RecieverID = reciever;
-    transaction_arr[transaction_arr_ptr].Amount = amount;
+    transaction_arr[transaction_arr_ptr] = tr;
+    transaction_arr_ptr++;
 
-    //Updates the transaction array of the sender
-    user_arr[sender].transactions[user_arr[sender].numTransactions].SenderID = sender;
-    user_arr[sender].transactions[user_arr[sender].numTransactions].RecieverID = reciever;
-    user_arr[sender].transactions[user_arr[sender].numTransactions].Amount = amount;
+    //Updates the transaction for the sender
+    sender->transactions[sender->numTransactions] = tr;
+    sender->numTransactions++;
+    sender->balance -= amount;
 
-    //Updates sender balance
-    user_arr[sender].balance -= amount;
-
-    //Updates transaction array of the sender
-    user_arr[reciever].transactions[user_arr[reciever].numTransactions].SenderID = sender;
-    user_arr[reciever].transactions[user_arr[reciever].numTransactions].RecieverID = reciever;
-    user_arr[reciever].transactions[user_arr[reciever].numTransactions].Amount = amount;
-
-    //Updates reciever balance
-    user_arr[reciever].balance += amount;
-
-    //Updates number of transactions for the sender and reciever
-    user_arr[sender].numTransactions += 1;
-    user_arr[reciever].numTransactions += 1;
+    //Updates transaction for the reciever
+    reciever->transactions[reciever->numTransactions] = tr;
+    reciever->numTransactions++;
+    reciever->balance += amount;
 }
 
 void inqure_bal(int user)
 {
-    if (user_arr[user].joinDateTime[0] == 0 && user_arr[user].joinDateTime[1] == 0)
+    Person *P = FindUser(user);
+    if (P == NULL)
     {
-        printf("User doesn't exist");
+        printf("Invalid user ID");
         return;
     }
-    printf("The balance for the user with UID %d is %lf units\n", user, user_arr[user].balance);
+    printf("The balance for the user with UID %d is %lf units\n", P->uID, P->balance);
     return;
 }
 
 void inquire_transactions(int user)
 {
+    Person *P = FindUser(user);
     for (int i = 0; i < user_arr[user].numTransactions; i++)
     {
-        printf("%i - Sender: %d \t Reciever: %d \t Amount: %lf", i + 1, user_arr[user].transactions[i].SenderID, user_arr[user].transactions[i].RecieverID, user_arr[user].transactions[i].Amount);
+        printf("%i - Sender: %d \t Reciever: %d \t Amount: %lf",
+               i + 1, P->transactions[i].SenderID, P->transactions[i].RecieverID, P->transactions[i].Amount);
     }
     return;
 }
