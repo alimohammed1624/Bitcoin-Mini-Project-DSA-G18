@@ -15,7 +15,7 @@ extern int transaction_arr_ptr = 0;
 extern Block *BlockChain;
 
 // Global variable for user hashtable
-extern HashTable usertable;
+extern HashTable userTable;
 
 struct t
 {
