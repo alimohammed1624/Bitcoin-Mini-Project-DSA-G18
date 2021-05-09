@@ -42,6 +42,9 @@ struct person
     time_t joinDateTime;
 };
 
+void initBlockChain();
+void deleteBlockChain();
+
 void addUser(Person elem);
 void inqure_bal(int user);
 void inquire_transactions(int user);

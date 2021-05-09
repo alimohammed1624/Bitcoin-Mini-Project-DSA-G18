@@ -6,6 +6,25 @@
 #include "src/utils.h"
 #include "src/hashtable.h"
 
+void initBlockChain()
+{
+    BlockChain = NULL;
+    initHashTable(1009);
+}
+
+void deleteBlockChain()
+{
+    Block *cur = BlockChain;
+    while (cur != NULL)
+    {
+        Block *temp = cur;
+        cur = cur->NextBlock;
+        free(temp);
+    }
+    BlockChain = NULL;
+    DeleteHashTable();
+}
+
 void transact(int sender, int reciever, double amount)
 {
     if (user_arr[sender].joinDateTime[0] == 0 && user_arr[sender].joinDateTime[1] == 0)
@@ -137,29 +156,33 @@ void createBlock()
 {
     Block *newBlock = (*Block)malloc(sizeof(Block));
     Block *lastBlock = BlockChain;
-
-    while (lastBlock->NextBlock)
+    if (newBlock == NULL)
     {
-        lastBlock = lastBlock->NextBlock;
-    }
-
-    newBlock->BlockNumber = lastBlock->BlockNumber + 1;
-    newBlock->NextBlock = NULL;
-    newBlock->Nonce = rand() % 500 + 1;
-
-    newBlock->Transactions = (transaction *)malloc(50 * sizeof(transaction));
-    if (newBlock->Transactions == NULL)
-    {
-        printf("Insfficient space for new block! Terminating program\n");
+        printf("Error: Insfficient space\n");
         exit(0);
     }
+
+    if (BlockChain == NULL)
+    {
+        newBlock->BlockNumber = 1;
+        strcpy(newBlock->PrevBlockHash, "0");
+    }
+    else
+    {
+        while (lastBlock->NextBlock)
+        {
+            lastBlock = lastBlock->NextBlock;
+        }
+        newBlock->BlockNumber = lastBlock->BlockNumber + 1;
+        getBlockHash(newBlock->PrevBlockHash, lastBlock->BlockNumber,
+                     newBlock->Transactions, lastBlock->PrevBlockHash, newBlock->Nonce);
+    }
+    newBlock->NextBlock = NULL;
+    newBlock->Nonce = rand() % 500 + 1;
     for (int i = 0; i < 50; i++)
         newBlock->Transactions[i] = transaction_arr[i];
 
-    getBlockHash(newBlock->PrevBlockHash, lastBlock->BlockNumber,
-                 newBlock->Transactions, lastBlock->PrevBlockHash, newBlock->Nonce);
     transaction_arr_ptr = 0;
-
     lastBlock->NextBlock = newBlock;
 }
 
