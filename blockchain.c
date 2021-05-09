@@ -8,20 +8,23 @@
 
 void initBlockChain()
 {
-    BlockChain = NULL;
+    B.Bchain = NULL;
+    B.LastBlockHash[0] = '\0';
+    B.numBlocks = 0;
+    B.transaction_arr_ptr = 0;
     initHashTable(1009);
 }
 
 void deleteBlockChain()
 {
-    Block *cur = BlockChain;
+    Block *cur = B.Bchain;
     while (cur != NULL)
     {
         Block *temp = cur;
         cur = cur->NextBlock;
         free(temp);
     }
-    BlockChain = NULL;
+    B.Bchain = NULL;
     DeleteHashTable();
 }
 
@@ -57,16 +60,16 @@ void transact(int sender, int reciever, double amount)
     }
     update(S, R, amount);
 
-    if (transaction_arr_ptr == num_t)
+    if (B.transaction_arr_ptr == num_t)
     {
         createBlock();
         for (int i = 0; i < num_t; i++)
         {
-            transaction_arr[i].SenderID = 0;
-            transaction_arr[i].RecieverID = 0;
-            transaction_arr[i].Amount = 0;
+            B.transaction_arr[i].SenderID = 0;
+            B.transaction_arr[i].RecieverID = 0;
+            B.transaction_arr[i].Amount = 0;
         }
-        transaction_arr_ptr = 0;
+        B.transaction_arr_ptr = 0;
     }
     return;
 }
@@ -80,8 +83,8 @@ void update(Person *sender, Person *reciever, double amount)
     tr.RecieverID = reciever->uID;
 
     //Updates the values in the array of transactions for the current block
-    transaction_arr[transaction_arr_ptr] = tr;
-    transaction_arr_ptr++;
+    B.transaction_arr[B.transaction_arr_ptr] = tr;
+    B.transaction_arr_ptr++;
 
     //Updates the transaction for the sender
     sender->transactions[sender->numTransactions] = tr;
@@ -109,7 +112,7 @@ void inqure_bal(int user)
 void inquire_transactions(int user)
 {
     Person *P = FindUser(user);
-    for (int i = 0; i < user_arr[user].numTransactions; i++)
+    for (int i = 0; i < P->numTransactions; i++)
     {
         printf("%i - Sender: %d \t Reciever: %d \t Amount: %lf",
                i + 1, P->transactions[i].SenderID, P->transactions[i].RecieverID, P->transactions[i].Amount);
@@ -140,47 +143,47 @@ void addUser()
     user.joinDateTime = *localtime(&rawtime);
     user.balance = 1000;
     user.numTransactions = 0;
-    printf("New user added: User iD is %d\n", user.uID);
+    printf("New user added: User ID is %d\n", user.uID);
     InsertS(user);
 }
 
 void createBlock()
 {
     Block *newBlock = (Block *)malloc(sizeof(Block));
-    Block *lastBlock = BlockChain;
     if (newBlock == NULL)
     {
         printf("Error: Insfficient space\n");
         exit(0);
     }
 
-    if (BlockChain == NULL)
-    {
-        newBlock->BlockNumber = 1;
-        strcpy(newBlock->PrevBlockHash, "0");
-    }
-    else
-    {
-        while (lastBlock->NextBlock)
-        {
-            lastBlock = lastBlock->NextBlock;
-        }
-        newBlock->BlockNumber = lastBlock->BlockNumber + 1;
-        getBlockHash(newBlock->PrevBlockHash, lastBlock->BlockNumber,
-                     newBlock->Transactions, lastBlock->PrevBlockHash, newBlock->Nonce);
-    }
+    // initialize the new block
+    newBlock->BlockNumber = B.numBlocks + 1;
+    strcpy(newBlock->PrevBlockHash, B.LastBlockHash);
     newBlock->NextBlock = NULL;
     newBlock->Nonce = rand() % 500 + 1;
     for (int i = 0; i < num_t; i++)
-        newBlock->Transactions[i] = transaction_arr[i];
+        newBlock->Transactions[i] = B.transaction_arr[i];
 
-    transaction_arr_ptr = 0;
-    lastBlock->NextBlock = newBlock;
+    // Append new block to the existing chain
+    if (B.Bchain == NULL)
+        B.Bchain = newBlock;
+    else
+    {
+        Block *lastBlock = B.Bchain;
+        while (lastBlock->NextBlock)
+            lastBlock = lastBlock->NextBlock;
+        lastBlock->NextBlock = newBlock;
+    }
+
+    // update Block chain deatils
+    B.transaction_arr_ptr = 0;
+    B.numBlocks++;
+    getBlockHash(B.LastBlockHash, newBlock->BlockNumber, newBlock->Transactions, newBlock->PrevBlockHash, newBlock->Nonce);
 }
 
 void attack()
 {
-    if (BlockChain == NULL)
+    if (B.Bchain == NULL)
     {
         printf("Attack not possible, block chain empty\n");
         return;
@@ -188,7 +191,14 @@ void attack()
 
     int randNum = rand() % 50 + 1;
     printf("Random number generated: %d\n", randNum);
-    Block *curBlock = BlockChain;
+
+    if (randNum > B.numBlocks)
+    {
+        printf("Attack failed: Block with number %d does not exist\n", randNum);
+        return;
+    }
+
+    Block *curBlock = B.Bchain;
     while (curBlock != NULL)
     {
         if (curBlock->BlockNumber == randNum)
@@ -197,13 +207,8 @@ void attack()
             printf("Attack successful! Nonce modified\n");
             return;
         }
-        else if (curBlock->BlockNumber > randNum)
-            break;
-
         curBlock = curBlock->NextBlock;
     }
-    printf("Attack failed: Block with number %d does not exist\n", randNum);
-    return;
 }
 
 // concatenates the transaction array into string dest
@@ -250,32 +255,34 @@ int getNonce(char *curHash, char *originalHash, int nonce)
 
 void validate()
 {
-    if (BlockChain == NULL)
+    if (B.Bchain == NULL)
     {
         printf("Block chain empty\n");
         return;
     }
-    if (BlockChain->NextBlock == NULL)
-    {
-        printf("Block chain validated");
-        return;
-    }
 
-    Block *curBlock = BlockChain->NextBlock;
-    Block *prevBlock = BlockChain;
+    Block *curBlock = B.Bchain;
+    Block *nextBlock;
     int countAttacks = 0;
     while (curBlock != NULL)
     {
         char curHash[500];
+        nextBlock = curBlock->NextBlock;
+
+        // get the hash of the current block
         getBlockHash(curHash, curBlock->BlockNumber, curBlock->Transactions,
-                     curBlock->PrevBlockHash, prevBlock->Nonce);
-        if (strcmp(curHash, curBlock->PrevBlockHash) != 0)
+                     curBlock->PrevBlockHash, curBlock->Nonce);
+
+        // compare hash of current block with prevBlockHash of next block
+        if (strcmp(curHash, nextBlock->PrevBlockHash) != 0)
         {
-            prevBlock->Nonce = getNonce(curHash, curBlock->PrevBlockHash, prevBlock->Nonce);
+            if (curBlock->NextBlock == NULL)
+                curBlock->Nonce = getNonce(curHash, B.LastBlockHash, curBlock->Nonce);
+            else
+                curBlock->Nonce = getNonce(curHash, nextBlock->PrevBlockHash, curBlock->Nonce);
             countAttacks++;
         }
 
-        prevBlock = curBlock;
         curBlock = curBlock->NextBlock;
     }
 

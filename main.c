@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "src/utils.h"
-#include "global.h"
+
+BlockChain B;
 
 void main()
 {

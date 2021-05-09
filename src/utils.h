@@ -4,21 +4,17 @@
 #include <time.h>
 
 typedef struct block Block;
+typedef struct blockchain BlockChain;
 typedef struct t transaction;
 typedef struct person Person;
+typedef struct hashtable HashTable;
+typedef struct node Node;
 
 // macro for number of transactions in each block
 #define num_t 50
 
-// Global variables for transasct
-extern transaction transaction_arr[num_t];
-extern int transaction_arr_ptr;
-
-// Blockchain
-extern Block *BlockChain;
-
-// Global variable for user hashtable
-extern HashTable userTable;
+// Global variable for blockchain
+extern BlockChain B;
 
 struct t
 {
@@ -44,10 +40,6 @@ struct person
     transaction transactions[1000];
     struct tm joinDateTime;
 };
-
-typedef struct hashtable HashTable;
-typedef struct node Node;
-
 struct hashtable
 {
     int tsize;
@@ -59,6 +51,16 @@ struct node
 {
     Person user;
     Node *next;
+};
+
+struct blockchain
+{
+    Block *Bchain;                      // Pointer to first block in the chain
+    char LastBlockHash[300];            // Stores the hash of the last block
+    int numBlocks;                      // number of chains in the block
+    HashTable userTable;                // hashtable of useres
+    transaction transaction_arr[num_t]; // Transactions to be added to the next block
+    int transaction_arr_ptr;            // number of transactions in transaction_arr
 };
 
 void initBlockChain();

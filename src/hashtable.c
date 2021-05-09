@@ -13,10 +13,10 @@ Node *makenode(Person n)
 
 void initHashTable(int m)
 {
-    userTable.num_elems = 0;
-    userTable.tsize = m;
-    userTable.table = (Node *)malloc(m * sizeof(Node));
-    if (userTable.table == NULL)
+    B.userTable.num_elems = 0;
+    B.userTable.tsize = m;
+    B.userTable.table = (Node *)malloc(m * sizeof(Node));
+    if (B.userTable.table == NULL)
     {
         printf("Error: Insufficient memory\n");
         exit(0);
@@ -24,16 +24,16 @@ void initHashTable(int m)
 
     for (int i = 0; i < m; i++)
     {
-        userTable.table[i].next = NULL;
+        B.userTable.table[i].next = NULL;
     }
 }
 
 void DeleteHashTable()
 {
-    int n = userTable.tsize;
+    int n = B.userTable.tsize;
     for (int i = 0; i < n; i++)
     {
-        Node *cur = userTable.table[i].next;
+        Node *cur = B.userTable.table[i].next;
         while (cur)
         {
             Node *temp = cur;
@@ -41,27 +41,27 @@ void DeleteHashTable()
             free(temp);
         }
     }
-    free(userTable.table);
+    free(B.userTable.table);
 }
 
 void InsertS(Person elem)
 {
-    int hash = elem.uID % userTable.tsize;
+    int hash = elem.uID % B.userTable.tsize;
     Node *newnode = makenode(elem);
-    Node *temp = &(userTable.table[hash]);
+    Node *temp = &(B.userTable.table[hash]);
 
     while (temp->next)
     {
         temp = temp->next;
     }
     temp->next = newnode;
-    userTable.num_elems++;
+    B.userTable.num_elems++;
 }
 
 Person *FindUser(int uID)
 {
-    int hash = uID % userTable.tsize;
-    Node *temp = userTable.table[hash].next;
+    int hash = uID % B.userTable.tsize;
+    Node *temp = B.userTable.table[hash].next;
 
     for (; temp != NULL; temp = temp->next)
     {
