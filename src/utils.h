@@ -7,6 +7,9 @@ typedef struct block Block;
 typedef struct t transaction;
 typedef struct person Person;
 
+// macro for number of transactions in each block
+#define num_t 50
+
 // Global variables for transasct
 extern transaction transaction_arr[50];
 extern int transaction_arr_ptr = 0;

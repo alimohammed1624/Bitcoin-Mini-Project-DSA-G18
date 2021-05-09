@@ -58,20 +58,18 @@ void transact(int sender, int reciever, double amount)
         return;
     }
     update(sender, reciever, amount);
-    if (transaction_arr_ptr == 50)
+    transaction_arr_ptr++;
+
+    if (transaction_arr_ptr == num_t)
     {
         createBlock();
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < num_t; i++)
         {
             transaction_arr[i].SenderID = 0;
             transaction_arr[i].RecieverID = 0;
             transaction_arr[i].Amount = 0;
         }
         transaction_arr_ptr = 0;
-    }
-    else
-    {
-        transaction_arr_ptr += 1;
     }
     return;
 }
@@ -180,7 +178,7 @@ void createBlock()
     }
     newBlock->NextBlock = NULL;
     newBlock->Nonce = rand() % 500 + 1;
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < num_t; i++)
         newBlock->Transactions[i] = transaction_arr[i];
 
     transaction_arr_ptr = 0;
@@ -220,7 +218,7 @@ void getTranactionStr(char *dest, transaction *transactions)
 {
     char tempTransact[50];
     dest[0] = '\0';
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < num_t; i++)
     {
         snprintf(tempTransact, sizeof(tempTransact), "{%d, %d, %d}",
                  transactions[i].SenderID, transactions[i].Amount, transactions[i].RecieverID);
@@ -231,8 +229,8 @@ void getTranactionStr(char *dest, transaction *transactions)
 // calculates hash of a block by taking destination string and block contents as arguments
 void getBlockHash(char *hash, int blocknum, transaction *transactions, char *PrevBlockHash, int nonce)
 {
-    char tempBuffer[2000];
-    char transactionStr[1000];
+    char tempBuffer[50 * num_t + 300];
+    char transactionStr[50 * num_t];
 
     getTranactionStr(transactionStr, transactions);
     snprintf(tempBuffer, sizeof(tempBuffer), "%d, %s, %s", blocknum, PrevBlockHash, transactionStr);
