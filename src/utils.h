@@ -11,7 +11,7 @@ typedef struct person Person;
 #define num_t 50
 
 // Global variables for transasct
-extern transaction transaction_arr[50];
+extern transaction transaction_arr[num_t];
 extern int transaction_arr_ptr = 0;
 
 // Blockchain
@@ -30,7 +30,7 @@ struct t
 struct block
 {
     int BlockNumber;
-    transaction Transactions[50];
+    transaction Transactions[num_t];
     char PrevBlockHash[300];
     int Nonce;
     Block *NextBlock;
