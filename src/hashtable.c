@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "hashtable.h"
+#include <stdio.h>
 
 Node *makenode(Person n)
 {
@@ -25,7 +26,6 @@ void initHashTable(int m)
     {
         userTable.table[i].next = NULL;
     }
-    return userTable;
 }
 
 void DeleteHashTable()
@@ -48,7 +48,7 @@ void InsertS(Person elem)
 {
     int hash = elem.uID % userTable.tsize;
     Node *newnode = makenode(elem);
-    Node *temp = &userTable.table[hash];
+    Node *temp = &(userTable.table[hash]);
 
     while (temp->next)
     {

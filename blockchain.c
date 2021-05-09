@@ -55,7 +55,7 @@ void transact(int sender, int reciever, double amount)
         printf("Transaction aborted: Amount must be greater than zero\n");
         return;
     }
-    update(S, R amount);
+    update(S, R, amount);
 
     if (transaction_arr_ptr == num_t)
     {
@@ -140,13 +140,13 @@ void addUser()
     user.joinDateTime = *localtime(&rawtime);
     user.balance = 1000;
     user.numTransactions = 0;
-    printf("New user added: User iD is %d, %d\n", user.uID);
+    printf("New user added: User iD is %d\n", user.uID);
     InsertS(user);
 }
 
 void createBlock()
 {
-    Block *newBlock = (*Block)malloc(sizeof(Block));
+    Block *newBlock = (Block *)malloc(sizeof(Block));
     Block *lastBlock = BlockChain;
     if (newBlock == NULL)
     {

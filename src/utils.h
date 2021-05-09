@@ -1,7 +1,6 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 
-#include "hashtable.h"
 #include <time.h>
 
 typedef struct block Block;
@@ -13,7 +12,7 @@ typedef struct person Person;
 
 // Global variables for transasct
 extern transaction transaction_arr[num_t];
-extern int transaction_arr_ptr = 0;
+extern int transaction_arr_ptr;
 
 // Blockchain
 extern Block *BlockChain;
@@ -46,10 +45,26 @@ struct person
     struct tm joinDateTime;
 };
 
+typedef struct hashtable HashTable;
+typedef struct node Node;
+
+struct hashtable
+{
+    int tsize;
+    int num_elems;
+    Node *table;
+};
+
+struct node
+{
+    Person user;
+    Node *next;
+};
+
 void initBlockChain();
 void deleteBlockChain();
 
-void addUser(Person elem);
+void addUser();
 void inqure_bal(int user);
 void inquire_transactions(int user);
 void transact(int sender, int reciever, double amount);
