@@ -73,7 +73,7 @@ void transact(int sender, int reciever, double amount)
     }
     if (S->balance < amount)
     {
-        printf("Transaction aborted: Sender balance insufficient");
+        printf("Transaction aborted: Sender balance insufficient\n");
         return;
     }
     if (amount <= 0)
@@ -102,7 +102,7 @@ void inqure_bal(int user)
     Person *P = FindUser(user);
     if (P == NULL)
     {
-        printf("Invalid user ID");
+        printf("Invalid user ID\n");
         return;
     }
     printf("The balance for the user with UID %d is %lf units\n", P->uID, P->balance);
@@ -112,6 +112,11 @@ void inqure_bal(int user)
 void inquire_transactions(int user)
 {
     Person *P = FindUser(user);
+    if (P == NULL)
+    {
+        printf("Invalid user ID\n");
+        return;
+    }
     for (int i = 0; i < P->numTransactions; i++)
     {
         printf("%i - Sender: %d \t Reciever: %d \t Amount: %lf",
