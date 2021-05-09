@@ -126,10 +126,10 @@ void inquire_transactions(int user)
     return;
 }
 
-void addUser(Person elem)
+void addUser()
 {
     int r = 0;
-    Person *user = (Person *)malloc(sizeof(Person));
+    Person user;
 
     while (1)
     {
@@ -144,12 +144,13 @@ void addUser(Person elem)
             continue;
         }
     }
-    user->uID = r;
-    time(&user->joinDateTime);
-    user->balance = 1000;
-    user->numTransactions = 0;
+    user.uID = r;
+    time(&user.joinDateTime);
+    user.balance = 1000;
+    user.numTransactions = 0;
     printf("Your user ID is %d\n", user.uID);
-    InsertS(*user);
+    InsertS(user);
+    InsertS()
 }
 
 void createBlock()

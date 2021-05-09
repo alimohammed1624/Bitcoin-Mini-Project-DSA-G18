@@ -19,7 +19,7 @@ struct node
 
 void initHashTable(int m);
 void DeleteHashTable();
-void InsertS(Person P);
+void InsertS(Person elem);
 Person *FindUser(int uID);
 
 #endif
