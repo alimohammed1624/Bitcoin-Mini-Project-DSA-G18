@@ -19,6 +19,7 @@ void main()
     scanf("[^n]");
 
     int input;
+    char temp;
     while (1)
     {
         printf("\n\n");
@@ -37,6 +38,7 @@ void main()
         if (input == 0)
         {
             deleteBlockChain();
+            printf("Block chain terimnated sucessfully!\n");
             break;
         }
 
@@ -97,5 +99,9 @@ void main()
         }
         else
             printf("Invalid input! Try again!\n");
+
+        printf("Press enter to continue!\n");
+        scanf("%c", &temp);
+        scanf("%c", &temp);
     }
 }
