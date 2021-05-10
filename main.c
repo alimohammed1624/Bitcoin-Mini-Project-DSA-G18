@@ -15,11 +15,11 @@ void main()
     system("clear");
 
     initBlockChain();
-    printf("You have started the blockchain.\nPress enter\n");
-    scanf("[^n]");
 
     int input;
     char temp;
+    printf("\n\nYou have started the blockchain.\nPress enter\n");
+    scanf("%c", &temp);
     while (1)
     {
         printf("\n\n");
