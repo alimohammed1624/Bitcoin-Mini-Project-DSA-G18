@@ -27,7 +27,7 @@ struct block
 {
     int BlockNumber;
     transaction Transactions[num_t];
-    char PrevBlockHash[300];
+    unsigned char PrevBlockHash[30];
     int Nonce;
     Block *NextBlock;
 };
@@ -56,7 +56,7 @@ struct node
 struct blockchain
 {
     Block *Bchain;                      // Pointer to first block in the chain
-    char LastBlockHash[300];            // Stores the hash of the last block
+    unsigned char LastBlockHash[30];    // Stores the hash of the last block
     int numBlocks;                      // number of chains in the block
     HashTable userTable;                // hashtable of useres
     transaction transaction_arr[num_t]; // Transactions to be added to the next block

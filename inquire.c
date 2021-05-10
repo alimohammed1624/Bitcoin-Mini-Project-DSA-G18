@@ -29,7 +29,7 @@ void inquire_transactions(int user)
     }
     for (int i = 0; i < P->numTransactions; i++)
     {
-        printf("%i - Sender: %d \t Reciever: %d \t Amount: %lf",
+        printf("%2d - Sender: %9d \t\t Reciever: %9d \t\t Amount: %lf\n",
                i + 1, P->transactions[i].SenderID, P->transactions[i].RecieverID, P->transactions[i].Amount);
     }
     return;
@@ -46,8 +46,8 @@ void displayBlockChain()
         printf("Block number: %d\n", curBlock->BlockNumber);
         printf("Nonce: %d\n", curBlock->Nonce);
         printf("Hash of previous block: ");
-        int len = strlen(curBlock->PrevBlockHash);
-        for (int i = 0; i < len; i++)
+        // int len = strlen(curBlock->PrevBlockHash);
+        for (int i = 0; i < 20; i++)
             printf("%02x ", curBlock->PrevBlockHash[i]);
         printf("\n\n");
 
@@ -58,7 +58,7 @@ void displayBlockChain()
 // displays information about a particular block
 void displayBlock(int bnum)
 {
-    if (B.numBlocks > bnum)
+    if (B.numBlocks < bnum || bnum < 1)
     {
         printf("Error: block number invalid\n");
         return;
@@ -71,13 +71,13 @@ void displayBlock(int bnum)
     printf("Block number: %d\n", curBlock->BlockNumber);
     printf("Nonce: %d\n", curBlock->Nonce);
     printf("Hash of previous block: ");
-    int len = strlen(curBlock->PrevBlockHash);
-    for (int i = 0; i < len; i++)
+    // int len = strlen(curBlock->PrevBlockHash);
+    for (int i = 0; i < 20; i++)
         printf("%02x ", curBlock->PrevBlockHash[i]);
 
     printf("\n\nTransactions: \n");
     for (int i = 0; i < num_t; i++)
-        printf("%i - Sender: %d \t Reciever: %d \t Amount: %lf",
+        printf("%2d - Sender: %9d \t\t Reciever: %9d \t\t Amount: %lf\n",
                i + 1, curBlock->Transactions[i].SenderID, curBlock->Transactions[i].RecieverID,
                curBlock->Transactions[i].Amount);
     printf("\n\n");

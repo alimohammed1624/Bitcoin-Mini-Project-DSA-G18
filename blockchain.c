@@ -7,13 +7,15 @@
 
 // helper functions to find block hash and original nonce of attacked block
 // defined in "blockhash.c"
-int getNonce(char *curHash, char *originalHash, int nonce);
-void getBlockHash(char *hash, int blocknum, transaction *transactions, char *PrevBlockHash, int nonce);
+int getNonce(unsigned char *curHash, unsigned char *originalHash, int nonce);
+void getBlockHash(unsigned char *hash, int blocknum, transaction *transactions, unsigned char *PrevBlockHash, int nonce);
 
 void initBlockChain()
 {
     B.Bchain = NULL;
-    strcpy(B.LastBlockHash, "0");
+    for (int i = 0; i < 20; i++)
+        B.LastBlockHash[i] = 0;
+    B.LastBlockHash[20] = '\0';
     B.numBlocks = 0;
     B.transaction_arr_ptr = 0;
     initHashTable(1009);
@@ -210,9 +212,9 @@ void validate()
     Block *curBlock = B.Bchain;
     Block *nextBlock;
     int countAttacks = 0;
-    while (curBlock != NULL)
+    while (curBlock->NextBlock != NULL)
     {
-        char curHash[500];
+        unsigned char curHash[30];
         nextBlock = curBlock->NextBlock;
 
         // get the hash of the current block
@@ -220,23 +222,41 @@ void validate()
                      curBlock->PrevBlockHash, curBlock->Nonce);
 
         // compare hash of current block with prevBlockHash of next block
-        if (strcmp(curHash, nextBlock->PrevBlockHash) != 0)
+        if (strncmp(curHash, nextBlock->PrevBlockHash, 20) != 0)
         {
             if (countAttacks == 0)
                 printf("Attack detected!\n");
-            int origNonce = curBlock->Nonce;
-
-            if (curBlock->NextBlock == NULL)
-                curBlock->Nonce = getNonce(curHash, B.LastBlockHash, curBlock->Nonce);
-            else
-                curBlock->Nonce = getNonce(curHash, nextBlock->PrevBlockHash, curBlock->Nonce);
+            int curNonce = curBlock->Nonce;
+            curBlock->Nonce = getNonce(curHash, nextBlock->PrevBlockHash, curBlock->Nonce);
 
             printf("Block number: %d\n", curBlock->BlockNumber);
-            printf("Current nonce: %d\nOriginal nonce: %d\n", origNonce, curBlock->Nonce);
+            printf("Current nonce: %d\nOriginal nonce: %d\n\n", curNonce, curBlock->Nonce);
             countAttacks++;
         }
-
         curBlock = curBlock->NextBlock;
+    }
+
+    // validating last block
+    if (curBlock->NextBlock == NULL)
+    {
+        unsigned char curHash[30];
+
+        // get the hash of the current block
+        getBlockHash(curHash, curBlock->BlockNumber, curBlock->Transactions,
+                     curBlock->PrevBlockHash, curBlock->Nonce);
+
+        // compare hash of current block with prevBlockHash of next block
+        if (strncmp(curHash, B.LastBlockHash, 20) != 0)
+        {
+            if (countAttacks == 0)
+                printf("Attack detected!\n");
+            int curNonce = curBlock->Nonce;
+            curBlock->Nonce = getNonce(curHash, B.LastBlockHash, curBlock->Nonce);
+
+            printf("Block number: %d\n", curBlock->BlockNumber);
+            printf("Current nonce: %d\nOriginal nonce: %d\n", curNonce, curBlock->Nonce);
+            countAttacks++;
+        }
     }
 
     printf("Block chain validated: %d attacks have been reversed\n", countAttacks);

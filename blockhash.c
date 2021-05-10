@@ -6,7 +6,7 @@
 // This file contains all functions related to block hash
 
 // returns the original nonce of a block if it has been attacked
-int getNonce(char *curHash, char *originalHash, int nonce)
+int getNonce(unsigned char *curHash, unsigned char *originalHash, int nonce)
 {
     curHash[1] ^= nonce;
     curHash[0] ^= nonce >> 8;
@@ -34,9 +34,9 @@ void getTranactionStr(char *dest, transaction *transactions)
 }
 
 // calculates hash of a block by taking destination string and block contents as arguments
-void getBlockHash(char *hash, int blocknum, transaction *transactions, char *PrevBlockHash, int nonce)
+void getBlockHash(unsigned char *hash, int blocknum, transaction *transactions, unsigned char *PrevBlockHash, int nonce)
 {
-    char tempBuffer[50 * num_t + 300];
+    char tempBuffer[50 * num_t + 30];
     char transactionStr[50 * num_t];
 
     getTranactionStr(transactionStr, transactions);
