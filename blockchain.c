@@ -9,7 +9,7 @@
 void initBlockChain()
 {
     B.Bchain = NULL;
-    B.LastBlockHash[0] = '\0';
+    strcpy(B.LastBlockHash, "0");
     B.numBlocks = 0;
     B.transaction_arr_ptr = 0;
     initHashTable(1009);
