@@ -4,6 +4,11 @@
 
 BlockChain B;
 
+void inquire_transactions(int user);
+void inqure_bal(int user);
+void displayBlockChain();
+void displayBlock(int bnum);
+
 void main()
 {
     srand(time(NULL));
@@ -22,7 +27,9 @@ void main()
         printf("3 - Make a transaction\n");
         printf("4 - Attack a random block\n");
         printf("5 - Validate the blockchain\n");
-        printf("6 - View Transaction history\n");
+        printf("6 - View User's Transaction history\n");
+        printf("7 - View Block chain\n");
+        printf("8 - Display block by block number\n");
         printf("0 - Kill the blockchain\n\n");
         printf("Enter your choice: ");
         scanf("%d", &input);
@@ -33,22 +40,20 @@ void main()
             break;
         }
 
-        if (input == 1)
+        else if (input == 1)
         {
             addUser();
-            continue;
         }
 
-        if (input == 2)
+        else if (input == 2)
         {
             int user;
             printf("Enter user uID: ");
             scanf("%d", &user);
             inqure_bal(user);
-            continue;
         }
 
-        if (input == 3)
+        else if (input == 3)
         {
             int sender;
             int reciever;
@@ -60,30 +65,37 @@ void main()
             printf("Enter amount to be transferred: ");
             scanf("%lf", &amount);
             transact(sender, reciever, amount);
-            continue;
         }
 
-        if (input == 4)
+        else if (input == 4)
         {
             attack();
-            continue;
         }
 
-        if (input == 5)
+        else if (input == 5)
         {
             validate();
-            continue;
         }
 
-        if (input == 6)
+        else if (input == 6)
         {
             printf("Enter user ID: ");
             int user;
             scanf("%d", &user);
             inquire_transactions(user);
-            continue;
         }
-
-        printf("Invalid input! Try again!\n");
+        else if (input == 7)
+        {
+            displayBlockChain();
+        }
+        else if (input == 8)
+        {
+            int bnum;
+            printf("Enter block number: ");
+            scanf("%d", &bnum);
+            displayBlock(bnum);
+        }
+        else
+            printf("Invalid input! Try again!\n");
     }
 }

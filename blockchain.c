@@ -101,36 +101,7 @@ void transact(int sender, int reciever, double amount)
         }
         B.transaction_arr_ptr = 0;
     }
-    return;
-}
-
-// displays a user's current balance
-void inqure_bal(int user)
-{
-    Person *P = FindUser(user);
-    if (P == NULL)
-    {
-        printf("Invalid user ID\n");
-        return;
-    }
-    printf("The balance for the user with UID %d is %lf units\n", P->uID, P->balance);
-    return;
-}
-
-// displays a user's transaction history
-void inquire_transactions(int user)
-{
-    Person *P = FindUser(user);
-    if (P == NULL)
-    {
-        printf("Invalid user ID\n");
-        return;
-    }
-    for (int i = 0; i < P->numTransactions; i++)
-    {
-        printf("%i - Sender: %d \t Reciever: %d \t Amount: %lf",
-               i + 1, P->transactions[i].SenderID, P->transactions[i].RecieverID, P->transactions[i].Amount);
-    }
+    printf("Transaction successful!\n");
     return;
 }
 
