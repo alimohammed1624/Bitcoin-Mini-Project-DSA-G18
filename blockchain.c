@@ -2,9 +2,13 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <openssl/sha.h>
 #include "src/utils.h"
 #include "src/hashtable.h"
+
+// helper functions to find block hash and original nonce of attacked block
+// defined in "blockhash.c"
+int getNonce(char *curHash, char *originalHash, int nonce);
+void getBlockHash(char *hash, int blocknum, transaction *transactions, char *PrevBlockHash, int nonce);
 
 void initBlockChain()
 {
@@ -28,7 +32,7 @@ void deleteBlockChain()
     DeleteHashTable();
 }
 
-//Updates values in respective arrays
+// Updates values in respective arrays
 void update(Person *sender, Person *reciever, double amount)
 {
     transaction tr;
@@ -36,21 +40,24 @@ void update(Person *sender, Person *reciever, double amount)
     tr.SenderID = sender->uID;
     tr.RecieverID = reciever->uID;
 
-    //Updates the values in the array of transactions for the current block
+    // Updates the values in the array of transactions for the current block
     B.transaction_arr[B.transaction_arr_ptr] = tr;
     B.transaction_arr_ptr++;
 
-    //Updates the transaction for the sender
+    // Updates the transaction for the sender
     sender->transactions[sender->numTransactions] = tr;
     sender->numTransactions++;
     sender->balance -= amount;
 
-    //Updates transaction for the reciever
+    // Updates transaction for the reciever
     reciever->transactions[reciever->numTransactions] = tr;
     reciever->numTransactions++;
     reciever->balance += amount;
 }
 
+// verifies if the requested transaction if valid and adds it to the list of transactions
+// and updates sender and reviever info by calling update()
+// if number of new transactions is num_t, it creates a new block and adds it to the blockchain
 void transact(int sender, int reciever, double amount)
 {
     Person *S = FindUser(sender);
@@ -97,6 +104,7 @@ void transact(int sender, int reciever, double amount)
     return;
 }
 
+// displays a user's current balance
 void inqure_bal(int user)
 {
     Person *P = FindUser(user);
@@ -109,6 +117,7 @@ void inqure_bal(int user)
     return;
 }
 
+// displays a user's transaction history
 void inquire_transactions(int user)
 {
     Person *P = FindUser(user);
@@ -125,6 +134,7 @@ void inquire_transactions(int user)
     return;
 }
 
+// adds a new user and displays their user id
 void addUser()
 {
     int r = 0;
@@ -150,33 +160,6 @@ void addUser()
     user.numTransactions = 0;
     printf("New user added: User ID is %d\n", user.uID);
     InsertS(user);
-}
-
-// concatenates the transaction array into string dest
-void getTranactionStr(char *dest, transaction *transactions)
-{
-    char tempTransact[50];
-    dest[0] = '\0';
-    for (int i = 0; i < num_t; i++)
-    {
-        snprintf(tempTransact, sizeof(tempTransact), "{%d, %lf, %d}",
-                 transactions[i].SenderID, transactions[i].Amount, transactions[i].RecieverID);
-        strcat(dest, tempTransact);
-    }
-}
-
-// calculates hash of a block by taking destination string and block contents as arguments
-void getBlockHash(char *hash, int blocknum, transaction *transactions, char *PrevBlockHash, int nonce)
-{
-    char tempBuffer[50 * num_t + 300];
-    char transactionStr[50 * num_t];
-
-    getTranactionStr(transactionStr, transactions);
-    snprintf(tempBuffer, sizeof(tempBuffer), "%d, %s, %s", blocknum, PrevBlockHash, transactionStr);
-
-    SHA1(tempBuffer, strlen((const char *)tempBuffer), hash);
-    hash[1] ^= nonce;
-    hash[0] ^= nonce >> 8;
 }
 
 void createBlock()
@@ -235,27 +218,14 @@ void attack()
     {
         if (curBlock->BlockNumber == randNum)
         {
+            int originalNonce = curBlock->Nonce;
             curBlock->Nonce = rand() % 500 + 1;
             printf("Attack successful! Nonce modified\n");
+            printf("Original nonce: %d\nNew nonce:%d\n", originalNonce, curBlock->Nonce);
             return;
         }
         curBlock = curBlock->NextBlock;
     }
-}
-
-// returns the original nonce of a block
-int getNonce(char *curHash, char *originalHash, int nonce)
-{
-    curHash[1] ^= nonce;
-    curHash[0] ^= nonce >> 8;
-
-    curHash[0] ^= originalHash[0];
-    curHash[1] ^= originalHash[1];
-
-    int originalNonce = (int)curHash[0];
-    originalNonce = originalNonce << 8;
-    originalNonce += (int)curHash[1];
-    return originalNonce;
 }
 
 void validate()
@@ -281,15 +251,22 @@ void validate()
         // compare hash of current block with prevBlockHash of next block
         if (strcmp(curHash, nextBlock->PrevBlockHash) != 0)
         {
+            if (countAttacks == 0)
+                printf("Attack detected!\n");
+            int origNonce = curBlock->Nonce;
+
             if (curBlock->NextBlock == NULL)
                 curBlock->Nonce = getNonce(curHash, B.LastBlockHash, curBlock->Nonce);
             else
                 curBlock->Nonce = getNonce(curHash, nextBlock->PrevBlockHash, curBlock->Nonce);
+
+            printf("Block number: %d\n", curBlock->BlockNumber);
+            printf("Current nonce: %d\nOriginal nonce: %d\n", origNonce, curBlock->Nonce);
             countAttacks++;
         }
 
         curBlock = curBlock->NextBlock;
     }
 
-    printf("Block chain validated: %d attacks detected\n", countAttacks);
+    printf("Block chain validated: %d attacks have been reversed\n", countAttacks);
 }
